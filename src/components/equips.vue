@@ -38,8 +38,8 @@
           <FormItem label="型号" prop="type">
             <Input v-model="addForm.type"></Input>
           </FormItem>
-          <FormItem label="数量" prop="count">
-            <InputNumber :min="0" v-model="addForm.count"></InputNumber>
+          <FormItem label="设备编码" prop="number">
+            <Input v-model="addForm.number"></Input>
           </FormItem>
           <FormItem label="备注" prop="remark">
             <Input v-model="addForm.remark"></Input>
@@ -65,8 +65,8 @@
           <FormItem label="型号" prop="type">
             <Input v-model="updateForm.type"></Input>
           </FormItem>
-          <FormItem label="数量" prop="count">
-            <InputNumber :min="0" v-model="updateForm.count"></InputNumber>
+          <FormItem label="设备编码" prop="number">
+            <Input v-model="addForm.number"></Input>
           </FormItem>
           <FormItem label="备注" prop="remark">
             <Input v-model="updateForm.remark"></Input>
@@ -138,11 +138,6 @@ export default {
         {
           title: "型号",
           key: "type",
-          align: "center"
-        },
-        {
-          title: "数量",
-          key: "count",
           align: "center"
         },
         {

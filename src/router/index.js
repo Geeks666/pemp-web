@@ -57,7 +57,18 @@ const router = new Router({
           meta: {
             title: `${systemName}-装备卸载校对`
           },
-          component: () => import("@/components/equipsCheck")
+          redirect: "/main/equips-check/check",
+          component: () => import("@/components/equipsCheck"),
+          children: [
+            {
+              path: "check",
+              name: "Check",
+              meta: {
+                title: `${systemName}-出库装备`
+              },
+              component: () => import("@/components/check")
+            }
+          ]
         }
       ]
     }

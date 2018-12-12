@@ -108,20 +108,6 @@
     </Drawer>
   </div>
 </template>
-<script>
-  /*function makeCode () {
-    var elText = document.getElementById("text");
-
-    if (!elText.value) {
-      alert("Input a text");
-      elText.focus();
-      return;
-    }
-
-    qrcode.makeCode(elText.value);
-  };*/
-
-</script>
 
 <script>
 export default {
@@ -280,36 +266,12 @@ export default {
           align: "center"
         },
         {
-          title: "使用数量",
-          key: "use_count",
-          align: "center",
-          width: 90
-        },
-        {
           title: "操作",
           key: "handle",
           align: "center",
           width: 130,
           render: (h, params) => {
             return h("div", [
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "primary",
-                    size: "small"
-                  },
-                  style: {
-                    marginRight: "8px"
-                  },
-                  on: {
-                    click: () => {
-                      this.updateEquip(params);
-                    }
-                  }
-                },
-                "修改"
-              ),
               h(
                 "Poptip",
                 {
@@ -377,35 +339,6 @@ export default {
           title: "型号",
           key: "type",
           align: "center"
-        },
-        {
-          title: "剩余数量",
-          key: "count",
-          align: "center",
-          width: 90
-        },
-        {
-          title: "添加使用数量",
-          key: "use_count",
-          align: "center",
-          width: 110,
-          render: (h, params) => {
-            return h("div", [
-              h("InputNumber", {
-                props: {
-                  min: 0,
-                  max: params.row.count,
-                  size: "small",
-                  value: params.row.use_count
-                },
-                on: {
-                  "on-change": r => {
-                    params.row.use_count = r;
-                  }
-                }
-              })
-            ]);
-          }
         },
         {
           title: "操作",
@@ -686,57 +619,31 @@ export default {
         });
     },
     handleAddSelected(params) {
-      if (params.row.use_count == 0 || params.row.count == 0) {
+      /*if (params.row.use_count == 0 || params.row.count == 0) {
         return;
-      }
-      params.row.count = params.row.count - params.row.use_count;
+      }*/
+      // params.row.count = params.row.count - params.row.use_count;
       let status = true,
-        rowData = {},
-        selectionNum = params.row.number;
-
+        rowData = {};
+        //selectionNum = params.row.number;
       rowData.number = params.row.number;
       rowData.equip_name = params.row.equip_name;
       rowData.brand = params.row.brand;
       rowData.type = params.row.type;
-      rowData.use_count = params.row.use_count;
-
-      for (let index = 0; index < this.selectedTableData.length; index++) {
-        if (selectionNum == this.selectedTableData[index].number) {
-          this.$http
-            .post("/api/shows/selected_equip_update", {
-              id: params.row.id,
-              use_count: params.row.use_count
-            })
-            .then(res => {
-              var data = res.data;
-              if (data.code == 200) {
-                this.selectedTableData[index].use_count += rowData.use_count;
-                params.row.use_count = 0;
-              } else {
-                this.$Message.error(data.msg);
-              }
-            });
-
-          return;
-        }
-      }
 
       this.$http
         .post("/api/shows/selected_equip_add", {
           show_id: this.updateForm.id,
           equip_id: params.row.id,
-          use_count: params.row.use_count
         })
         .then(res => {
           var data = res.data;
           if (data.code == 200) {
             this.selectedTableData.push(rowData);
-            params.row.use_count = 0;
           } else {
             this.$Message.error(data.msg);
           }
         });
-
       return;
     },
     handleDelSelected(params) {
@@ -758,66 +665,6 @@ export default {
           }
         });
     },
-
-    updateEquip(params) {
-      let max = params.row.use_count,
-        residue = params.row.use_count,
-        index = params.index,
-        existing_count = params.row.use_count,
-        equipNum = params.row.number;
-      this.$http.get("/api/shows/residue_equips", { params: { equipNum } }).then(res=>{
-        var data = res.data;
-        if (data.code == 200) {
-          max += data.result.residue;
-          residue = data.result.residue;
-        }
-        this.updateEquipCount = params.row.use_count;
-        this.$Modal.confirm({
-          width: 300,
-          render: h => {
-            return h("div", [
-              h("InputNumber", {
-                props: {
-                  value: this.updateEquipCount,
-                  min: 0,
-                  max: max,
-                  autofocus: true
-                },
-                on: {
-                  "on-change": v => {
-                    this.updateEquipCount = v;
-                  }
-                }
-              }),
-              h(
-                "span",
-                {
-                  style: {
-                    marginLeft: "8px"
-                  }
-                },
-                `剩余数量: ${residue}`
-              )
-            ]);
-          },
-          onOk: () => {
-            this.$http
-            .post("/api/shows/selected_equip_update", {
-              id: params.row.id,
-              use_count: this.updateEquipCount - existing_count
-            })
-            .then(res => {
-              var data = res.data;
-              if (data.code == 200) {
-                this.selectedTableData[index].use_count = this.updateEquipCount;
-              } else {
-                this.$Message.error(data.msg);
-              }
-            });
-          }
-        });
-      });
-    }
   }
 };
 </script>
