@@ -57,6 +57,9 @@
           <FormItem label="手机/座机" prop="tel">
             <Input v-model="formUserInfo.tel"></Input>
           </FormItem>
+          <FormItem label="公司编码" prop="number">
+            <Input v-model="formUserInfo.number"></Input>
+          </FormItem>
           <FormItem label="备注" prop="remark">
             <Input v-model="formUserInfo.remark"></Input>
           </FormItem>
@@ -120,6 +123,7 @@ export default {
         postcode: "",
         address: "",
         tel: "",
+        number:"",
         remark: ""
       },
       formPassInfo: {

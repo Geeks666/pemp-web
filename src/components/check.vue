@@ -2,8 +2,24 @@
   <div style="padding: 15px 15px 0 15px;">
     <Form :model="searchForm" :label-width="100" :inline="true">
       <FormItem label="演出名称" prop="show_id" :label-width="60">
-        <Input v-model="searchForm.show_id" clearable></Input>
+        <!--<Input v-model="searchForm.show_id" clearable></Input>-->
+        <Select
+          v-model="searchForm.show_id" filterable>
+          <!--filterable-->
+          <!--remote-->
+          <!--&gt;-->
+          <Option v-for='item in selectOptions' :value="item.id" :key="item.value">{{ item.show_name }}</Option>
+
+          <!--<Option v-for="(option, index) in SelectOptions" :value="option.id" :key="index">{{option.show_name}}</Option>-->
+        </Select>
       </FormItem>
+      <FormItem label="设备状态" prop="status" :label-width="60">
+        <!--<Input v-model="searchForm.status" clearable></Input>-->
+        <Select v-model="searchForm.status" style="width:200px">
+          <Option v-for='item in [{value:0,label:"已绑定未出库"},{value:1,label:"已出库未入库"},{value:2,label:"已入库"}]' :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
+      </FormItem>
+
       <FormItem>
         <Button type="primary" @click="handleSearchSubmit">查询</Button>
       </FormItem>
@@ -13,7 +29,7 @@
       <div style="float: left;">
         <Button type="primary" icon="md-add" @click="outputScan">出库扫描</Button>
         <Button type="primary" icon="md-add" @click="putawayScan">入库扫描</Button>
-        <Button type="primary" icon="md-add" @click="closeScan">入库扫描</Button>
+        <Button type="primary" icon="md-add" @click="closeScan">结束扫描</Button>
       </div>
       <div style="float: right;">
         <Page :total="total" :current="current" :page-size="pageSize" @on-change="changePage"></Page>
@@ -35,6 +51,7 @@ export default {
       noDataText: "读取中...",
       addPop: false,
       add_loading: false,
+      selectOptions:[],
       addForm: {
         equip_name: "",
         brand: "",
@@ -56,6 +73,7 @@ export default {
       searchForm: {
         show_name: "",
         show_id: "",
+        status
       },
       tableData: [],
       tableColumns: [
@@ -84,13 +102,14 @@ export default {
           key: "status",
           align: "center",
           render:(h,params)=>{
-
-            if(params.row.status === 0 ){
-              return h("div","未出库");
-            }else if(params.row.status === 1 ){
+            if( params.row.status === 0 ){
+              return h("div","等待出库");
+            }else if( params.row.status === 1 ){
               return h("div","已出库")
+            }else if( params.row.status === 2 ){
+              return h("div","已入库")
             }else{
-              return h("div","未入库")
+              return h("div","已丢失")
             }
           }
         }
@@ -103,6 +122,7 @@ export default {
     }
   },
   mounted() {
+    this.getSelectOptions();
     this.getTableData();
   },
   watch: {
@@ -117,10 +137,9 @@ export default {
       searchForm = searchForm || this.searchForm;
       this.loading = true;
       this.$http
-        .get("/api/app/test", {
-          params: {
-            status:0
-          }
+        .post("/api/check/search", {
+          status:searchForm.status,
+          show_id:searchForm.show_id
         })
         .then(res => {
           var data = res.data;
@@ -130,6 +149,16 @@ export default {
             this.current = data.result.current;
           }
           this.loading = false;
+        });
+    },
+    getSelectOptions() {
+      this.$http
+        .post("/api/shows/list")
+        .then(res => {
+          var data = res.data;
+          if (data.code == 200) {
+            this.selectOptions = data.result;
+          }
         });
     },
     handleSearchSubmit() {
@@ -146,6 +175,9 @@ export default {
     outputScan() {
       var that = this;
       that.timer = setInterval( function (){
+        /*that.http.post("http://127.0.0.1:20085/moduleapi/syncinventory",{
+          data:'{"antennas": [4], "timeout": 300}'
+        })*/
         var a = {"reader_name":"localreader/10.5.100.2","op_type:":"syncinventory","err_code":0,"err_string":"ok","result":[{"epc":"E2000017351002531180A037","bank_data":"","antenna":4,"read_count":3,"protocol":5,"rssi":-61,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E20000173510025316906B2A","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-55,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E20000173510025315507855","bank_data":"","antenna":4,"read_count":3,"protocol":5,"rssi":-57,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E200001735100253171066CE","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-54,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E20000173510025317006766","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-62,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E200001735100253154078DE","bank_data":"","antenna":4,"read_count":3,"protocol":5,"rssi":-51,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E200001735100253185059A9","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-53,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E20000173510025313408EC6","bank_data":"","antenna":4,"read_count":3,"protocol":5,"rssi":-59,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"100000201805260000002292","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-47,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"100000201805260000002266","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-56,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E20000173510025316806BC2","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-63,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"100000201805260000002257","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-53,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E20000173510025318405A43","bank_data":"","antenna":4,"read_count":3,"protocol":5,"rssi":-55,"firstseen_timestamp":0,"lastseen_timestamp":0}]}
         a = JSON.stringify(a);
         that.$http
@@ -157,7 +189,7 @@ export default {
           .then(res => {
             var data = res.data;
             if (data.code == 200) {
-              this.getTableData();
+              that.getTableData();
             }
           });
       }, 1000);
@@ -176,7 +208,7 @@ export default {
           .then(res => {
             var data = res.data;
             if (data.code == 200) {
-              this.getTableData();
+              that.getTableData();
             }
           });
       }, 1000);

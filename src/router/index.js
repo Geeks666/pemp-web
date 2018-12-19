@@ -69,6 +69,13 @@ const router = new Router({
               component: () => import("@/components/check")
             }
           ]
+        },{
+          path: "equips-notice",
+          name: "EquipsNotice",
+          meta: {
+            title: `${systemName}-装备卸载校对`
+          },
+          component: () => import("@/components/notice"),
         }
       ]
     }

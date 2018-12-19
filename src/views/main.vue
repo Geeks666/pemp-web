@@ -11,6 +11,7 @@
       </div>
       </Col>
       <Col span="8" class="nav">
+      <router-link to="/main/equips-notice">公告</router-link>
       <router-link to="/main/equips-shows">我的装备</router-link>
       <router-link to="/main/equips-check">装备卸载校对</router-link>
       </Col>

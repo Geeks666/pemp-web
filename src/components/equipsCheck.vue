@@ -38,6 +38,7 @@
             <p class="userInfo"><b>手机/座机：</b>{{userInfo.tel}}</p>
             <div style="margin: 20px 0 0 0;text-align:center;">
               <Button type="info" @click="openUpdateUser">修改信息</Button>
+              <Button type="info" @click="openStore">编辑仓库</Button>
               <Button type="success" @click="openUpdatePass">修改密码</Button>
             </div>
           </Card>
@@ -62,15 +63,25 @@
           <FormItem label="手机/座机" prop="tel">
             <Input v-model="formUserInfo.tel"></Input>
           </FormItem>
+          <FormItem label="公司编码" prop="number">
+            <Input v-model="formUserInfo.number"></Input>
+          </FormItem>
           <FormItem label="备注" prop="remark">
             <Input v-model="formUserInfo.remark"></Input>
           </FormItem>
         </Form>
       </div>
       <div slot="footer">
-        <Button type="info" size="large" long :loading="user_loading" @click="handleUserSubmit()">保存</Button>
+        <Button type="info" size="large" long :loading="user_loading" @click="handleUserSubmit()">新建仓库</Button>
       </div>
     </Modal>
+    <modal v-model="store" width="50%" footer-hide>
+      <p slot="header">
+        <span>编辑仓库信息</span>
+      </p>
+      <myComponent22></myComponent22>
+    </modal>
+
     <Modal v-model="updatePass" width="360">
       <p slot="header">
         <span>修改密码</span>
@@ -96,6 +107,7 @@
 </template>
 
 <script>
+  import myComponent22 from "@/components/store";
   export default {
     data() {
       const validatePassCheck = (rule, value, callback) => {
@@ -114,11 +126,13 @@
           postcode: "",
           address: "",
           tel: "",
+          number:"",
           remark: ""
         },
         showInfo: {
           showId: "",
         },
+        store: false,
         updateUser: false,
         user_loading: false,
         updatePass: false,
@@ -142,6 +156,7 @@
         }
       };
     },
+
     computed: {
       initHeight() {
         return document.documentElement.clientHeight - 125;
@@ -165,6 +180,9 @@
       openUpdateUser() {
         this.updateUser = true;
         this.formUserInfo = this.userInfo;
+      },
+      openStore() {
+        this.store = true;
       },
       openUpdatePass() {
         this.updatePass = true;
@@ -223,6 +241,9 @@
           }
         });
       }
+    },
+    components:{
+      myComponent22: myComponent22
     }
   };
 </script>
