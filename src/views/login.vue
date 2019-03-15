@@ -49,14 +49,14 @@ export default {
         })
         .then(res => {
           let data = res.data;
-          debugger;
           if (data.code == 200) {
             this.$Message.success({
               content: data.msg,
               duration: 1,
               onClose: () => {
+                let redirectUrl = '/main';
                 this.$router.push({
-                  path: "/main"
+                  path: redirectUrl,
                 });
               }
             });

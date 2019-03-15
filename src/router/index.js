@@ -37,6 +37,7 @@ const router = new Router({
               path: "equips",
               name: "Equips",
               meta: {
+                requireAuth: true,
                 title: `${systemName}-管理我的装备`
               },
               component: () => import("@/components/equips")
@@ -67,6 +68,34 @@ const router = new Router({
                 title: `${systemName}-出库装备`
               },
               component: () => import("@/components/check")
+            }
+          ]
+        },{
+          path: "notice-shows",
+          name: "noticeShows",
+          meta: {
+            requireAuth: true,
+            title: `${systemName}-公告`
+          },
+          redirect: "/main/notice-shows/myself",
+          component: () => import("@/components/noticeShows"),
+          children: [
+            {
+              path: "myself",
+              name: "myselfNotice",
+              meta: {
+                requireAuth: true,
+                title: `${systemName}-公告`
+              },
+              component: () => import("@/components/notice")
+            },{
+              path: "other",
+              name: "otherNotice",
+              meta: {
+                requireAuth: true,
+                title: `${systemName}-其它家设备公告`
+              },
+              component: () => import("@/components/noticeOther")
             }
           ]
         },{

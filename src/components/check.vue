@@ -175,9 +175,29 @@ export default {
     outputScan() {
       var that = this;
       that.timer = setInterval( function (){
-        /*that.http.post("http://127.0.0.1:20085/moduleapi/syncinventory",{
-          data:'{"antennas": [4], "timeout": 300}'
-        })*/
+        /*that.$http.post("http://127.0.0.1:20085/moduleapi/syncinventory",{
+          antennas: [4], "timeout": 300
+        },{
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+        }).then(res => {
+          console.log(res);
+          var a = JSON.stringify(res.data);
+          that.$http
+            .post("/api/scan/output", {
+              params:{
+                optput: a
+              }
+            })
+            .then(res => {
+              var data = res.data;
+              if (data.code == 200) {
+                that.getTableData();
+              }else{
+                that.$Message.error(data.op_type);
+              }
+            });
+        });*/
         var a = {"reader_name":"localreader/10.5.100.2","op_type:":"syncinventory","err_code":0,"err_string":"ok","result":[{"epc":"E2000017351002531180A037","bank_data":"","antenna":4,"read_count":3,"protocol":5,"rssi":-61,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E20000173510025316906B2A","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-55,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E20000173510025315507855","bank_data":"","antenna":4,"read_count":3,"protocol":5,"rssi":-57,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E200001735100253171066CE","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-54,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E20000173510025317006766","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-62,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E200001735100253154078DE","bank_data":"","antenna":4,"read_count":3,"protocol":5,"rssi":-51,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E200001735100253185059A9","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-53,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E20000173510025313408EC6","bank_data":"","antenna":4,"read_count":3,"protocol":5,"rssi":-59,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"100000201805260000002292","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-47,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"100000201805260000002266","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-56,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E20000173510025316806BC2","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-63,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"100000201805260000002257","bank_data":"","antenna":4,"read_count":4,"protocol":5,"rssi":-53,"firstseen_timestamp":0,"lastseen_timestamp":0},{"epc":"E20000173510025318405A43","bank_data":"","antenna":4,"read_count":3,"protocol":5,"rssi":-55,"firstseen_timestamp":0,"lastseen_timestamp":0}]}
         a = JSON.stringify(a);
         that.$http
@@ -192,7 +212,8 @@ export default {
               that.getTableData();
             }
           });
-      }, 1000);
+
+      }, 50000);
     },
     putawayScan() {
       var that = this;
